@@ -117,8 +117,8 @@ void Client::showUserData() {
     cout << "Account number: " << accNum << endl;
 }
 
-void Client::savaDataToCsv() {
-    ofstream outputFile(R"(C:\Studia\c++\Projekt zaliczeniowy - sklep\client.csv)");
+void Client::saveDataToCsv() {
+    ofstream outputFile(R"(C:\Studia\c++\Projekt zaliczeniowy - sklep\client.csv)",ios::app);
     if (outputFile.is_open()) {
         string dataToSave = firstName + ";" + lastName + ";" + readGender() +";"+address + ";" + telNum + ";" + accNum;
         outputFile<<dataToSave;

@@ -14,13 +14,14 @@ class Client {
     string telNum;
     string accNum;
     Gender gender;
+    string readGender();
+    void changeGender();
 public:
     Client(string fN = "", string lN = "", string aD = "", string tN = "", string aN = "",Gender g = other);
     void modifyUserData();
     void showUserData();
-    void savaDataToCsv();
-    string readGender();
-    void changeGender();
+    void saveDataToCsv();
+    void readDataFromCsv();
 };
 
 
