@@ -13,14 +13,14 @@ Client::Client(string fN, string lN, string aD, string tN, string aN) {
 }
 
 void Client::modifyUserData() {
-    string newFirstName, newLastName, newAddres, newTelNumber, newAccNumber;
+    string newFirstName, newLastName, newAddress, newTelNumber, newAccNumber;
     int choice;
     cout << "Choose what u want to modify: " << endl;
-    cout << "1 - First name and last name"
-         << "2- Addres"
-         << "3- Telephone number"
-         << "4- Account number"
-         << "5 - All data";
+    cout << "1 - First name and last name\n"
+         << "2- Addres\n"
+         << "3- Telephone number\n"
+         << "4- Account number\n"
+         << "5 - All data\n";
     cin >> choice;
     switch (choice) {
         case 1:
@@ -34,9 +34,10 @@ void Client::modifyUserData() {
             firstName = newLastName;
             break;
         case 2:
+            cin.ignore();
             cout << "New addres: ";
-            cin >> newAddres;
-            address = newAddres;
+            getline(cin,newAddress);
+            address = newAddress;
             break;
         case 3:
             cout << "New telephone number: ";
@@ -49,24 +50,33 @@ void Client::modifyUserData() {
             accNum = newAccNumber;
             break;
         case 5:
+            cin.ignore();
             cout << "New first name: ";
-            cin >> newFirstName;
+            getline(cin, newFirstName);
             cout << "New last name: ";
-            cin >> newLastName;
-            cout << "New addres: ";
-            cin >> newAddres;
+            getline(cin, newLastName);
+            cout << "New address: ";
+            getline(cin, newAddress);
             cout << "New telephone number: ";
-            cin >> newTelNumber;
+            getline(cin, newTelNumber);
             cout << "New account number: ";
-            cin >> newAccNumber;
+            getline(cin, newAccNumber);
             firstName = newFirstName;
             lastName = newLastName;
-            address = newAddres;
+            address = newAddress;
             telNum = newTelNumber;
             accNum = newAccNumber;
             break;
         default:
             cout<<"Niepoprawny wybor"<<endl;
     }
+
+}
+void Client::showUserData() {
+    cout<<"First name: "<<firstName<<endl;
+    cout<<"Last name: "<<lastName<<endl;
+    cout<<"Addres: "<<address<<endl;
+    cout<<"Telephone number: "<<telNum<<endl;
+    cout<<"Account number: "<<accNum<<endl;
 
 }

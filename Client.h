@@ -16,6 +16,7 @@ class Client {
 public:
     Client(string fN = "", string lN = "", string aD = "", string tN = "", string aN = "");
     void modifyUserData();
+    void showUserData();
 };
 
 
