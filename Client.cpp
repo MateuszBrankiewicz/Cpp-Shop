@@ -26,6 +26,7 @@ string Client::readGender() {
         case 2:
             return "other";
     }
+
 }
 void Client::changeGender() {
     string newGender;
@@ -129,3 +130,19 @@ void Client::saveDataToCsv() {
     }
 
 }
+
+void Client::addToTransaction(map<int, Products> &productMap, int id) {
+    cout<<"Wybierz id produktu który chcesz kupic"<<endl;
+    auto it = productMap.find(id);
+    transaction.push_back(it->second);
+}
+
+float Client::getTotalTransactionAmount() {
+    float totalAmount = 0.0;
+    for ( auto& transactionClient : transaction) {
+        totalAmount += transactionClient.getPriceWithVat();
+    }
+    return totalAmount;
+}
+
+

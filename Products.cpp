@@ -5,7 +5,7 @@
 #include "Products.h"
 #include "fstream"
 #include "sstream"
-
+#include <vector>
 Products::Products(int i, string t, string p, string f, float outVat) {
     id =i;
     typeOfPart = t;
@@ -16,11 +16,9 @@ Products::Products(int i, string t, string p, string f, float outVat) {
 }
 
 void Products::showData() {
-   cout<<"Id "<<id<<endl;
-   cout<<"typeOfPart "<<typeOfPart<<endl;
-   cout<<"Producer "<<producer<<endl;
-   cout<<"FullName "<<fullName<<endl;
-    cout<<"Price out vat "<<priceWithoutVat<<endl;
-    cout<<"Price with Vat "<<priceWithVat<<endl;
+   cout<<"Id "<<id<<" typeOfPart "<<typeOfPart<<" Producer "<<producer<<" FullName "<<fullName<<" Price out vat "<<priceWithoutVat<<" Price with Vat "<<priceWithVat<<endl;
 
+}
+float Products::getPriceWithVat() {
+    return priceWithVat;
 }

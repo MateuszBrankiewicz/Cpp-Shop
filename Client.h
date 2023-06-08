@@ -5,9 +5,12 @@
 #ifndef PROJEKT_ZALICZENIOWY_CLIENT_H
 #define PROJEKT_ZALICZENIOWY_CLIENT_H
 #include <iostream>
+#include <vector>
+#include <map>
+#include "Products.h"
 using namespace std;
 enum Gender{male,female,other};
-class Client {
+class Client: public Products{
     string firstName;
     string lastName;
     string address;
@@ -16,12 +19,16 @@ class Client {
     Gender gender;
     string readGender();
     void changeGender();
+    vector <Client> transactionHistory;
+    vector <Products>transaction;
 public:
     Client(string fN = "", string lN = "", string aD = "", string tN = "", string aN = "",Gender g = other);
     void modifyUserData();
     void showUserData();
     void saveDataToCsv();
-    void readDataFromCsv();
+//    void readDataFromCsv();
+    float getTotalTransactionAmount();
+    void addToTransaction(map<int, Products> &productMap,int id);
 };
 
 

@@ -7,6 +7,7 @@
 
 #include <iostream>
 #include <map>
+#include <vector>
 using namespace std;
 
 class Products {
@@ -15,14 +16,13 @@ class Products {
     string producer;
     string fullName;
     float priceWithoutVat{};
+    map<int, Products> productMap;
+protected:
     float priceWithVat{};
-
 public:
     Products(int i= 0, string t="",string p ="", string f="",float outVat = 0);
-    map<int, Products> productMap;
-
+    float getPriceWithVat();
     void showData();
-
 };
 
 
