@@ -1,6 +1,11 @@
 #include <iostream>
-
+#include "Client.h"
+using namespace std;
 int main() {
-    std::cout << "Hello, World!" << std::endl;
+    Client c1("","","","","");
+    c1.showUserData();
+    c1.modifyUserData();
+    c1.showUserData();
+    c1.savaDataToCsv();
     return 0;
 }
