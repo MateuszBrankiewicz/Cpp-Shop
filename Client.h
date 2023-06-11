@@ -10,6 +10,7 @@
 #include "Products.h"
 using namespace std;
 enum Gender{male,female,other};
+enum PaymentMethod{elixir,blik,cash};
 class Client: public Products{
     string firstName;
     string lastName;
@@ -19,16 +20,22 @@ class Client: public Products{
     Gender gender;
     string readGender();
     void changeGender();
-    vector <Client> transactionHistory;
-    vector <Products>transaction;
+    vector <string> transactionHistory;
+//    vector <Products>transaction;
+    PaymentMethod method = blik;
 public:
     Client(string fN = "", string lN = "", string aD = "", string tN = "", string aN = "",Gender g = other);
+    map<int,Products> transaction;
     void modifyUserData();
     void showUserData();
-    void saveDataToCsv();
+    void saveUserData();
 //    void readDataFromCsv();
     float getTotalTransactionAmount();
-    void addToTransaction(map<int, Products> &productMap,int id);
+    void addToTransaction(map<int, Products> &productMap,int id,int quantity);
+    void submitTransaction(float totalAmount);
+    void saveTransactionHistory();
+    void displayCurrentTransaction();
+    void modifyCurrentTransaction(float &totalAmount);
 };
 
 

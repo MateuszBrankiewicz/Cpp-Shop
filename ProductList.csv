@@ -4,7 +4,7 @@
 4;CPU;Intel; Core I5-13600KF;1300
 5;disk M2;Lexar;NM620 1TB;140
 6;disk SSD;GOODRAM;CX400 512GB;60
-7;disk SSD;Gigabyte;256GB;55;
+7;disk SSD;Gigabyte;256GB;55
 8;disk M2;Samsyng;980 PRO 1TB;320
 9;GPU;Geforce;RTX 3060 12GB GDDR6;1400
 10;GPU;Radeon;RX 6600 8GB GDDR6;1300
@@ -28,7 +28,7 @@
 28;EPU;SilentiumPC;Elementum E2 550W;160
 29;EPU;Cooler Master; MWE GOLD-V2 750W;400
 30;EPU;be quiet;Pure Power 12M 750W;500
-31;CPU Cooler;ENDORFY;Fera 5; 100
+31;CPU Cooler;ENDORFY;Fera 5;100
 32;CPU Cooler;SilentiumPC;Fortis 5;150
 33;CPU Cooler;Silver Monkey;X SNOWY ARGB;400
 34;CPU Cooler;be quiet;Pure Rock 2;150

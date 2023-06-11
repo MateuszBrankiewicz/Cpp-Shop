@@ -28,6 +28,7 @@ string Client::readGender() {
     }
 
 }
+
 void Client::changeGender() {
     string newGender;
     cout << "New gender (male, female or other)";
@@ -42,6 +43,7 @@ void Client::changeGender() {
         cout << "Enter the correct data" << endl;
     }
 }
+
 void Client::modifyUserData() {
     string newFirstName, newLastName, newAddress, newTelNumber, newAccNumber, newGender;
     int choice;
@@ -106,7 +108,7 @@ void Client::modifyUserData() {
         default:
             cout << "Niepoprawny wybor" << endl;
     }
-
+    saveUserData();
 }
 
 void Client::showUserData() {
@@ -118,31 +120,127 @@ void Client::showUserData() {
     cout << "Account number: " << accNum << endl;
 }
 
-void Client::saveDataToCsv() {
-    ofstream outputFile(R"(C:\Studia\c++\Projekt zaliczeniowy - sklep\client.csv)",ios::app);
+void Client::saveUserData() {
+    ofstream outputFile(R"(C:\Studia\c++\Projekt zaliczeniowy - sklep\client.csv)", ios::app);
     if (outputFile.is_open()) {
-        string dataToSave = firstName + ";" + lastName + ";" + readGender() +";"+address + ";" + telNum + ";" + accNum;
-        outputFile<<dataToSave;
+        string dataToSave =
+                firstName + ";" + lastName + ";" + readGender() + ";" + address + ";" + telNum + ";" + accNum;
+        outputFile << dataToSave;
         outputFile.close();
+    } else {
+        cout << "Nie udalo sie otworzyc pliku" << endl;
     }
-    else{
-        cout<<"Nie udalo sie otworzyc pliku"<<endl;
-    }
+    ofstream binaryOutputFile(R"(C:\Studia\c++\Projekt zaliczeniowy - sklep\client.bin)", ios::binary | ios::app);
+    if (binaryOutputFile.is_open()) {
+        // Zapisujemy dane do pliku binarnego
+        binaryOutputFile.write(reinterpret_cast<const char *>(&firstName), sizeof(firstName));
+        binaryOutputFile.write(reinterpret_cast<const char *>(&lastName), sizeof(lastName));
+        binaryOutputFile.write(reinterpret_cast<const char *>(&address), sizeof(address));
+        binaryOutputFile.write(reinterpret_cast<const char *>(&telNum), sizeof(telNum));
+        binaryOutputFile.write(reinterpret_cast<const char *>(&accNum), sizeof(accNum));
 
+        binaryOutputFile.close();
+    } else {
+        cout << "Nie udało się otworzyć pliku binarnego" << endl;
+    }
 }
 
-void Client::addToTransaction(map<int, Products> &productMap, int id) {
-    cout<<"Wybierz id produktu który chcesz kupic"<<endl;
-    auto it = productMap.find(id);
-    transaction.push_back(it->second);
+
+
+void Client::addToTransaction(map<int, Products> &productMap, int id, int quantity) {
+    int i = 1;
+    cout << "Wybierz id produktu który chcesz kupic" << endl;
+    auto pm = productMap.find(id);
+    pm->second.quantity = quantity;
+
+    if (transaction.empty()) {
+        transaction[i] = pm->second;
+    } else {
+        auto tr = transaction.end();
+        i = tr->first + 1;
+        transaction[i] = pm->second;
+    }
+
 }
 
 float Client::getTotalTransactionAmount() {
     float totalAmount = 0.0;
-    for ( auto& transactionClient : transaction) {
-        totalAmount += transactionClient.getPriceWithVat();
+    for (auto &it: transaction) {
+        totalAmount += (it.second.getPriceWithVat()) * it.second.quantity;
     }
     return totalAmount;
 }
 
+void Client::submitTransaction(float totalAmount) {
+    string finalTransaction;
+    int accept;
+//    cout<<"Select payment method: 0-blik 1-elixir 2-cash";
+//    cin>>method;
+
+    cout << "Accept the transaction 1- Accept 0-decline" << endl;
+    cin >> accept;
+    if (accept == 1) {
+        finalTransaction =
+                firstName + " " + lastName + " " + readGender() + " " + address + " " + accNum + " " + telNum + " " +
+                "\n" +
+                Products::transactionsToString(transaction) + to_string(totalAmount);
+    }
+    cout << finalTransaction;
+    transactionHistory.push_back(finalTransaction);
+    saveTransactionHistory();
+}
+
+void Client::saveTransactionHistory() {
+    ofstream outputFile;
+    outputFile.open("C:\\Studia\\c++\\Projekt zaliczeniowy - sklep\\TransactionHistory.txt", ios::app);
+    if (outputFile.is_open()) {
+
+        for (const auto &it: transactionHistory) {
+            cout << it;
+            outputFile << it;
+        }
+    }
+    ofstream binaryOutputFile("C:\\Studia\\c++\\Projekt zaliczeniowy - sklep\\TransactionHistory.bin",
+                              ios::binary | ios::app);
+    if (binaryOutputFile.is_open()) {
+        for (const auto &transaction: transactionHistory) {
+            int messageLength = transaction.size();
+            binaryOutputFile.write(reinterpret_cast<const char *>(&messageLength), sizeof(messageLength));
+            binaryOutputFile.write(transaction.c_str(), messageLength);
+        }
+        binaryOutputFile.close();
+    }
+}
+
+void Client::displayCurrentTransaction() {
+    for (const auto &it: transaction) {
+        cout << it.first;
+        Products p = it.second;
+        p.showData();
+    }
+
+}
+
+void Client::modifyCurrentTransaction(float &totalAmount) {
+    int id;
+    int choice;
+    displayCurrentTransaction();
+    cout << "Choice what you want to modify" << endl;
+    cin >> id;
+    auto it = transaction.find(id);
+    cout << "What u want to do:\n 1-Change a quantity\n 2-Delete a product" << endl;
+    cin >> choice;
+    switch (choice) {
+        case 1:
+            cout << "Quantity";
+            cin >> it->second.quantity;
+            break;
+        case 2:
+            totalAmount -= it->second.getPriceWithVat()*it->second.quantity;
+            transaction.erase(id);
+            break;
+        default:
+            cout << "Zły wybór" << endl;
+    }
+}
 

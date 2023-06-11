@@ -16,13 +16,18 @@ class Products {
     string producer;
     string fullName;
     float priceWithoutVat{};
-    map<int, Products> productMap;
 protected:
     float priceWithVat{};
 public:
-    Products(int i= 0, string t="",string p ="", string f="",float outVat = 0);
+
+    int quantity;
+
     float getPriceWithVat();
     void showData();
+    static string transactionsToString(map <int,Products>transaction);
+    static void modifyProductMap(map <int,Products>&productMap);
+    static void displayProducts(map<int, Products> productMap);
+    Products(int i= 0, string t="",string p ="", string f="",float outVat = 0);
 };
 
 
