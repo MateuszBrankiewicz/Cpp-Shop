@@ -22,13 +22,13 @@ void Products::showData() {
 
 }
 
-float Products::getPriceWithVat() {
+float Products::getPriceWithVat() const {
     return priceWithVat;
 }
 
 string Products::transactionsToString(map<int, Products> transaction) {
     string allTransaction;
-    for (auto it: transaction) {
+    for (const auto &it: transaction) {
         allTransaction += it.second.typeOfPart + " " + it.second.producer + " " + it.second.fullName + " " +
                           to_string(it.second.priceWithVat) + " " +
                           to_string(it.second.quantity) + "\n";
@@ -38,52 +38,65 @@ string Products::transactionsToString(map<int, Products> transaction) {
 
 void Products::modifyProductMap(map<int, Products> &productMap) {
 
-    short choice;
+    short choice = 1;
     string typeOfPart, producer, fullName;
     float outVat;
 
-
-    cout << "1- Add product, 2-Delete Product" << endl;
-    cin >> choice;
-    if (choice == 1) {
-        auto it = productMap.end();
-        cout << "Type of part: " << endl;
-        cin >> typeOfPart;
-        cout << "Producer: " << endl;
-        cin >> producer;
-        cout << "Full name: " << endl;
-        cin >> fullName;
-        cout << "Prize without vat: " << endl;
-        cin >> outVat;
-        Products p(it->first + 1, typeOfPart, producer, fullName, outVat);
-        productMap[it->first + 1] = p;
-        ofstream file;
-        file.open("C:\\Studia\\c++\\Projekt zaliczeniowy - sklep\\ProductList.csv", ios::app);
-        if (file.is_open()) {
-            file << "\n" + to_string(it->first + 1) + ";" + typeOfPart + ";" + producer + ";" + fullName + ";" +
-                    to_string(outVat);
-        } else {
-            cout << "File error" << endl;
-        }
-    } else if (choice == 2) {
-        int id;
-        Products::displayProducts(productMap);
-        cout << "Select product to delete (id)" << endl;
-        cin >> id;
-        productMap.erase(id);
-        map<int, Products> updatedProductMap;
-        int newId = 1;
-        for (auto &item: productMap) {
-            if (item.first > id) {
-                updatedProductMap[newId] = item.second;
-                newId++;
+    while (choice != 0) {
+        cout << "1- Add product, 2-Delete Product, 0-Exit" << endl;
+        cin >> choice;
+        if (choice == 1) {
+            auto it = productMap.end();
+            cout << "Type of part: " << endl;
+            cin >> typeOfPart;
+            cout << "Producer: " << endl;
+            cin >> producer;
+            cout << "Full name: " << endl;
+            cin >> fullName;
+            fflush(stdin);
+            cout << "Prize without vat: " << endl;
+            cin >> outVat;
+            Products p(it->first + 1, typeOfPart, producer, fullName, outVat);
+            productMap[it->first + 1] = p;
+            ofstream file;
+            file.open(R"(C:\Studia\c++\Projekt zaliczeniowy - sklep\ProductList.csv)");
+            if (file.is_open()) {
+                file << "\n" + to_string(it->first) + ";" + typeOfPart + ";" + producer + ";" + fullName + ";" +
+                        to_string(outVat);
             } else {
-                updatedProductMap[item.first] = item.second;
+                cout << "File error" << endl;
+            }
+        } else if (choice == 2) {
+            int id;
+            Products::displayProducts(productMap);
+            cout << "Select product to delete (id)" << endl;
+            cin >> id;
+            productMap.erase(id);
+            map<int, Products> updatedProductMap;
+            int newId = 1;
+            for (auto &item: productMap) {
+
+                item.second.id = newId;
+                updatedProductMap[newId] = item.second;
+
                 newId++;
+
+            }
+
+            productMap = std::move(updatedProductMap);
+            Products::displayProducts(productMap);
+            ofstream file;
+            file.open(R"(C:\Studia\c++\Projekt zaliczeniowy - sklep\ProductList.csv)");
+            if (file.is_open()) {
+                for (const auto &it: productMap) {
+                    file << "\n" + to_string(it.first) + ";" + it.second.typeOfPart + ";" + it.second.producer + ";" +
+                            it.second.fullName + ";" +
+                            to_string(it.second.priceWithoutVat);
+                }
+            } else {
+                cout << "File error" << endl;
             }
         }
-        productMap = move(updatedProductMap);
-        Products::displayProducts(productMap);
     }
 
 
@@ -91,7 +104,7 @@ void Products::modifyProductMap(map<int, Products> &productMap) {
 
 void Products::displayProducts(map<int, Products> productMap) {
     if (productMap.empty()) {
-        cout << "Mapa jest pusta" << endl;
+        cout << "Map is empty" << endl;
     } else {
         for (const auto &pair: productMap) {
             int id = pair.first;

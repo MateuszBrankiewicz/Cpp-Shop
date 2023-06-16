@@ -8,6 +8,7 @@
 #include <iostream>
 #include <map>
 #include <vector>
+
 using namespace std;
 
 class Products {
@@ -22,12 +23,17 @@ public:
 
     int quantity;
 
-    float getPriceWithVat();
+    float getPriceWithVat() const;
+
     void showData();
-    static string transactionsToString(map <int,Products>transaction);
-    static void modifyProductMap(map <int,Products>&productMap);
+
+    static string transactionsToString(map<int, Products> transaction);
+
+    static void modifyProductMap(map<int, Products> &productMap);
+
     static void displayProducts(map<int, Products> productMap);
-    Products(int i= 0, string t="",string p ="", string f="",float outVat = 0);
+
+    Products(int i = 0, string t = "", string p = "", string f = "", float outVat = 0);
 };
 
 

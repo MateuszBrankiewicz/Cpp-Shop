@@ -76,6 +76,10 @@ void Client::modifyUserData() {
         case 3:
             cout << "New telephone number: ";
             cin >> newTelNumber;
+            if (newTelNumber.length() != 9) {
+                cout << "Telephone number have nine numbers" << endl;
+                cin >> newTelNumber;
+            }
             telNum = newTelNumber;
             break;
         case 4:
@@ -96,6 +100,10 @@ void Client::modifyUserData() {
             getline(cin, newAddress);
             cout << "New telephone number: ";
             getline(cin, newTelNumber);
+            if (newTelNumber.length() != 9) {
+                cout << "Telephone number have nine numbers" << endl;
+                getline(cin, newTelNumber);
+            }
             cout << "New account number: ";
             getline(cin, newAccNumber);
             firstName = newFirstName;
@@ -124,7 +132,7 @@ void Client::saveUserData() {
     ofstream outputFile(R"(C:\Studia\c++\Projekt zaliczeniowy - sklep\client.csv)", ios::app);
     if (outputFile.is_open()) {
         string dataToSave =
-                firstName + ";" + lastName + ";" + readGender() + ";" + address + ";" + telNum + ";" + accNum;
+                firstName + ";" + lastName + ";" + readGender() + ";" + address + ";" + telNum + ";" + accNum+"\n";
         outputFile << dataToSave;
         outputFile.close();
     } else {
@@ -132,19 +140,16 @@ void Client::saveUserData() {
     }
     ofstream binaryOutputFile(R"(C:\Studia\c++\Projekt zaliczeniowy - sklep\client.bin)", ios::binary | ios::app);
     if (binaryOutputFile.is_open()) {
-        // Zapisujemy dane do pliku binarnego
         binaryOutputFile.write(reinterpret_cast<const char *>(&firstName), sizeof(firstName));
         binaryOutputFile.write(reinterpret_cast<const char *>(&lastName), sizeof(lastName));
         binaryOutputFile.write(reinterpret_cast<const char *>(&address), sizeof(address));
         binaryOutputFile.write(reinterpret_cast<const char *>(&telNum), sizeof(telNum));
         binaryOutputFile.write(reinterpret_cast<const char *>(&accNum), sizeof(accNum));
-
         binaryOutputFile.close();
     } else {
         cout << "Nie udało się otworzyć pliku binarnego" << endl;
     }
 }
-
 
 
 void Client::addToTransaction(map<int, Products> &productMap, int id, int quantity) {
@@ -174,16 +179,27 @@ float Client::getTotalTransactionAmount() {
 void Client::submitTransaction(float totalAmount) {
     string finalTransaction;
     int accept;
-//    cout<<"Select payment method: 0-blik 1-elixir 2-cash";
-//    cin>>method;
-
+    setPaymentMethod();
     cout << "Accept the transaction 1- Accept 0-decline" << endl;
     cin >> accept;
     if (accept == 1) {
         finalTransaction =
-                firstName + " " + lastName + " " + readGender() + " " + address + " " + accNum + " " + telNum + " " +
+                "First Name: " + firstName + "\n" + "Last Name: " + lastName + "\n" + "Gender: " + readGender() + "\n" +
+                "Addres: " + address + "\n" + "Account Number: " + accNum + "\n" + "Telephone Number" + telNum + "\n" +
                 "\n" +
-                Products::transactionsToString(transaction) + to_string(totalAmount);
+                "Transaction List: " + "\n" + Products::transactionsToString(transaction) + "\n" + "Total amount: " +
+                to_string(totalAmount) + "\n" + "Payment Method: " + readPaymentMethod();
+    } else if (accept == 0) {
+        int deleteBasket;
+        cout << "Did you want to delete basket? 1-Yes, 2-No" << endl;
+        cin >> deleteBasket;
+        if (deleteBasket == 1) {
+            for (int i = 0; i < transaction.size(); i++) {
+                transaction.erase(i);
+            }
+        }
+    } else {
+        cout << "Invalid choice" << endl;
     }
     cout << finalTransaction;
     transactionHistory.push_back(finalTransaction);
@@ -192,7 +208,7 @@ void Client::submitTransaction(float totalAmount) {
 
 void Client::saveTransactionHistory() {
     ofstream outputFile;
-    outputFile.open("C:\\Studia\\c++\\Projekt zaliczeniowy - sklep\\TransactionHistory.txt", ios::app);
+    outputFile.open(R"(C:\Studia\c++\Projekt zaliczeniowy - sklep\TransactionHistory.txt)", ios::app);
     if (outputFile.is_open()) {
 
         for (const auto &it: transactionHistory) {
@@ -200,7 +216,7 @@ void Client::saveTransactionHistory() {
             outputFile << it;
         }
     }
-    ofstream binaryOutputFile("C:\\Studia\\c++\\Projekt zaliczeniowy - sklep\\TransactionHistory.bin",
+    ofstream binaryOutputFile(R"(C:\Studia\c++\Projekt zaliczeniowy - sklep\TransactionHistory.bin)",
                               ios::binary | ios::app);
     if (binaryOutputFile.is_open()) {
         for (const auto &transaction: transactionHistory) {
@@ -213,10 +229,15 @@ void Client::saveTransactionHistory() {
 }
 
 void Client::displayCurrentTransaction() {
-    for (const auto &it: transaction) {
-        cout << it.first;
-        Products p = it.second;
-        p.showData();
+    if (transaction.empty()) {
+        cout << "Transaction is empty" << endl;
+    } else {
+        for (const auto &it: transaction) {
+            cout << it.first;
+            Products p = it.second;
+            p.showData();
+            cout << " quantity: " << it.second.quantity;
+        }
     }
 
 }
@@ -236,7 +257,7 @@ void Client::modifyCurrentTransaction(float &totalAmount) {
             cin >> it->second.quantity;
             break;
         case 2:
-            totalAmount -= it->second.getPriceWithVat()*it->second.quantity;
+            totalAmount -= it->second.getPriceWithVat() * it->second.quantity;
             transaction.erase(id);
             break;
         default:
@@ -244,3 +265,32 @@ void Client::modifyCurrentTransaction(float &totalAmount) {
     }
 }
 
+void Client::setPaymentMethod() {
+    int choice;
+    cout << "Chose payment method 0-elixir 1-blik 2-cash" << endl;
+    cin >> choice;
+    switch (choice) {
+        case 0:
+            method = elixir;
+            break;
+        case 1:
+            method = blik;
+            break;
+        case 2:
+            method = cash;
+            break;
+        default:
+            cout << "Invalid choice" << endl;
+    }
+}
+
+string Client::readPaymentMethod() {
+    switch (method) {
+        case elixir:
+            return "elixir";
+        case blik:
+            return "blik";
+        case cash:
+            return "cash";
+    }
+}
