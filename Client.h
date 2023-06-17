@@ -47,7 +47,7 @@ public:
 
     void saveUserData();
 
-//    void readDataFromCsv();
+    void setUserData();
     float getTotalTransactionAmount();
 
     void addToTransaction(map<int, Products> &productMap, int id, int quantity);
@@ -60,6 +60,7 @@ public:
 
     void modifyCurrentTransaction(float &totalAmount);
 
+    string getTime();
 };
 
 

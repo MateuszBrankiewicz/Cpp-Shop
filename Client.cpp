@@ -4,7 +4,7 @@
 
 #include <fstream>
 #include "Client.h"
-
+#include <ctime>
 Client::Client(string fN, string lN, string aD, string tN, string aN, Gender g) {
     firstName = fN;
     lastName = lN;
@@ -91,27 +91,7 @@ void Client::modifyUserData() {
             changeGender();
             break;
         case 6:
-            cin.ignore();
-            cout << "New first name: ";
-            getline(cin, newFirstName);
-            cout << "New last name: ";
-            getline(cin, newLastName);
-            cout << "New address: ";
-            getline(cin, newAddress);
-            cout << "New telephone number: ";
-            getline(cin, newTelNumber);
-            if (newTelNumber.length() != 9) {
-                cout << "Telephone number have nine numbers" << endl;
-                getline(cin, newTelNumber);
-            }
-            cout << "New account number: ";
-            getline(cin, newAccNumber);
-            firstName = newFirstName;
-            lastName = newLastName;
-            changeGender();
-            address = newAddress;
-            telNum = newTelNumber;
-            accNum = newAccNumber;
+           setUserData();
             break;
         default:
             cout << "Niepoprawny wybor" << endl;
@@ -185,10 +165,10 @@ void Client::submitTransaction(float totalAmount) {
     if (accept == 1) {
         finalTransaction =
                 "First Name: " + firstName + "\n" + "Last Name: " + lastName + "\n" + "Gender: " + readGender() + "\n" +
-                "Addres: " + address + "\n" + "Account Number: " + accNum + "\n" + "Telephone Number" + telNum + "\n" +
+                "Addres: " + address + "\n" + "Account Number: " + accNum + "\n" + "Telephone Number: " + telNum + "\n" +
                 "\n" +
                 "Transaction List: " + "\n" + Products::transactionsToString(transaction) + "\n" + "Total amount: " +
-                to_string(totalAmount) + "\n" + "Payment Method: " + readPaymentMethod();
+                to_string(totalAmount) + "\n" + "Payment Method: " + readPaymentMethod()+"\n"+"Date: " + getTime();
     } else if (accept == 0) {
         int deleteBasket;
         cout << "Did you want to delete basket? 1-Yes, 2-No" << endl;
@@ -293,4 +273,43 @@ string Client::readPaymentMethod() {
         case cash:
             return "cash";
     }
+}
+
+void Client::setUserData() {
+    string newFirstName, newLastName, newAddress, newTelNumber, newAccNumber, newGender;
+    cin.ignore();
+    cout << "New first name: ";
+    getline(cin, newFirstName);
+    cout << "New last name: ";
+    getline(cin, newLastName);
+    cout << "New address: ";
+    getline(cin, newAddress);
+    if(newAddress.length()<=0){
+        cout<<"You must enter yours address"<<endl;
+        getline(cin,newAddress);
+    }
+    cout << "New telephone number: ";
+    getline(cin, newTelNumber);
+    if (newTelNumber.length() != 9) {
+        cout << "Telephone number have nine numbers" << endl;
+        getline(cin, newTelNumber);
+    }
+    cout << "New account number: ";
+    getline(cin, newAccNumber);
+    firstName = newFirstName;
+    lastName = newLastName;
+    changeGender();
+    address = newAddress;
+    telNum = newTelNumber;
+    accNum = newAccNumber;
+}
+
+string Client::getTime() {
+    string data;
+    time_t rawTime;
+    struct tm * timeInfo;
+    time ( &rawTime );
+    timeInfo = localtime ( &rawTime );
+    data = asctime(timeInfo);
+    return data;
 }

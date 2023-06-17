@@ -60,8 +60,9 @@ int main() {
                 cout << "Invalid login or password" << endl;
             }
         } else if (accountType == 2) {
-
+            cout<<"Welcome to my store, please enter your details in order to make purchases"<<endl;
             Client c1("", "", "", "", "");
+            c1.setUserData();
             do {
                 cout
                         << "What you will do? \n 1-Set/Modify user data,\n 2-Show user data,\n 3-Display available products,\n 4-Add products to basket,\n 5-Add 1 product to basket\n 6-Display current transaction,\n 7-Modify current transaction,\n 8-Submit transaction,\n 9-Exit"
